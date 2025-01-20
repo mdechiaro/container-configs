@@ -1,0 +1,88 @@
+# images:fedora/41/cloud
+---
+name: fedora-work-41
+description: work environment using fedora
+config:
+  environment.DBUS_SESSION_BUS_ADDRESS: /mnt/bus
+  environment.WAYLAND_DISPLAY: /mnt/wayland-0
+  user.user-data: |
+    #cloud-config
+    timezone: America/Chicago
+    users:
+    - name: user
+      shell: /bin/bash
+      sudo: ALL=(ALL) NOPASSWD:ALL
+    packages:
+    - aspell
+    - bash-completion
+    - firefox
+    - freerdp
+    - git
+    - libatomic
+    - libreoffice
+    - libtool
+    - lynx
+    - mutt
+    - nnn
+    - openconnect
+    - pinentry
+    - profanity
+    - python3
+    - python3-pip
+    - rclone
+    - rsync
+    - ruby
+    - tmux
+    - vim
+    - wget
+    - xdg-utils
+    runcmd:
+    - mkdir /opt/venv
+    # openconnect-sso
+    - dnf install -y libxml2-devel libxslt-devel
+    # fedora 41 ships with python 3.13
+    # that version fails to install properly
+    # workaround is to build with 3.12
+    - dnf install -y python3.12 python3.12-devel
+    - git clone https://github.com/vlaci/openconnect-sso /tmp/openconnect-sso
+    - python3.12 -m venv /opt/venv/openconnect-sso
+    - /opt/venv/openconnect-sso/bin/python -m ensurepip
+    - /opt/venv/openconnect-sso/bin/python -m pip install /tmp/openconnect-sso/
+    - rm -rf /tmp/openconnect-sso
+    power_state:
+      delay: now
+      mode: reboot
+      timeout: 30
+      condition: true
+devices:
+  dbus:
+    bind: container
+    connect: unix:/run/user/1000/bus
+    gid: '1000'
+    listen: unix:/mnt/bus
+    security.gid: '1000'
+    security.uid: '1000'
+    type: proxy
+    uid: '1000'
+  gpu:
+    gid: '1000'
+    type: gpu
+    uid: '1000'
+  network:
+    name: eth0
+    network: incusbr0
+    type: nic
+  storage:
+    path: /
+    pool: default
+    type: disk
+  wayland:
+    bind: container
+    connect: unix:/run/user/1000/wayland-0
+    gid: '1000'
+    listen: unix:/mnt/wayland-0
+    security.gid: '1000'
+    security.uid: '1000'
+    type: proxy
+    uid: '1000'
+used_by: []
