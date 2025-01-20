@@ -1,6 +1,6 @@
 # images:fedora/41/cloud
 ---
-name: fedora-work-41
+name: work
 description: work environment using fedora
 config:
   environment.DBUS_SESSION_BUS_ADDRESS: /mnt/bus
