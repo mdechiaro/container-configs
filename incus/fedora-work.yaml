@@ -48,6 +48,7 @@ config:
     - python3.12 -m venv /opt/venv/openconnect-sso
     - /opt/venv/openconnect-sso/bin/python -m ensurepip
     - /opt/venv/openconnect-sso/bin/python -m pip install /tmp/openconnect-sso/
+    - ln -s /opt/venv/openconnect-sso/bin/openconnect-sso /usr/local/bin/
     - rm -rf /tmp/openconnect-sso
     power_state:
       delay: now
