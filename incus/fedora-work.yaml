@@ -1,4 +1,4 @@
-# images:fedora/41/cloud
+# images:fedora/42/cloud
 ---
 name: work
 description: work environment using fedora
@@ -18,6 +18,7 @@ config:
     - firefox
     - freerdp
     - git
+    - git-credential-oauth
     - libatomic
     - libreoffice
     - libtool
