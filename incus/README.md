@@ -1,10 +1,13 @@
 ## Get started
 
-[Install](https://linuxcontainers.org/incus/docs/main/installing/#install-incus-from-a-package)
+Run `scripts/init.sh` to initialize first time setup.
 
-[Prep](https://linuxcontainers.org/incus/docs/main/installing/#machine-setup)
+Run following commands to use incus without sudo.
 
-[Initialize](https://linuxcontainers.org/incus/docs/main/howto/initialize/#interactive-configuration)
+```
+sudo usermod -G incus-admin $USER
+newgrp incus-admin
+```
 
 ## Profile
 
