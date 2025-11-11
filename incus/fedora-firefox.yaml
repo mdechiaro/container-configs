@@ -20,9 +20,9 @@ config:
     runcmd:
     - |
       cat <<EOF> /home/user/.bashrc
-      export PIPEWIRE_REMOTE=/mnt/pipewire_remote
-      export PULSE_SERVER=unix:/mnt/pulse_server
-      export WAYLAND_DISPLAY=/mnt/wayland_display
+      export PIPEWIRE_REMOTE=/run/mount/pipewire_remote
+      export PULSE_SERVER=unix:/run/mount/pulse_server
+      export WAYLAND_DISPLAY=/run/mount/wayland_display
       export XDG_RUNTIME_DIR=/run/user/1000
       EOF
     - chown user:user /home/user/.bashrc
@@ -41,7 +41,7 @@ devices:
     bind: container
     connect: unix:/run/user/1000/pipewire-0
     gid: '1000'
-    listen: unix:/mnt/pipewire_remote
+    listen: unix:/run/mount/pipewire_remote
     security.gid: '1000'
     security.uid: '1000'
     type: proxy
@@ -50,7 +50,7 @@ devices:
     bind: container
     connect: unix:/run/user/1000/pulse/native
     gid: '1000'
-    listen: unix:/mnt/pulse_server
+    listen: unix:/run/mount/pulse_server
     security.gid: '1000'
     security.uid: '1000'
     type: proxy
@@ -63,7 +63,7 @@ devices:
     bind: container
     connect: unix:/run/user/1000/wayland-0
     gid: '1000'
-    listen: unix:/mnt/wayland_display
+    listen: unix:/run/mount/wayland_display
     security.gid: '1000'
     security.uid: '1000'
     type: proxy

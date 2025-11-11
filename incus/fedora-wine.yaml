@@ -2,8 +2,8 @@
 name: work
 description: wine environment using fedora
 config:
-  environment.DBUS_SESSION_BUS_ADDRESS: /mnt/bus
-  environment.WAYLAND_DISPLAY: /mnt/wayland-0
+  environment.DBUS_SESSION_BUS_ADDRESS: /run/mount/bus
+  environment.WAYLAND_DISPLAY: /run/mount/wayland-0
   user.user-data: |
     #cloud-config
     timezone: America/Chicago
@@ -24,7 +24,7 @@ devices:
     bind: container
     connect: unix:/run/user/1000/bus
     gid: '1000'
-    listen: unix:/mnt/bus
+    listen: unix:/run/mount/bus
     security.gid: '1000'
     security.uid: '1000'
     type: proxy
@@ -45,7 +45,7 @@ devices:
     bind: container
     connect: unix:/run/user/1000/wayland-0
     gid: '1000'
-    listen: unix:/mnt/wayland-0
+    listen: unix:/run/mount/wayland-0
     security.gid: '1000'
     security.uid: '1000'
     type: proxy
