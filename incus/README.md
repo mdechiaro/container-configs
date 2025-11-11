@@ -9,6 +9,8 @@ sudo usermod -G incus-admin $USER
 newgrp incus-admin
 ```
 
+Run `scripts/dns-container-names.sh` to enable DNS lookups on container names.
+
 ## Profile
 
 Create profile and new container from it.
