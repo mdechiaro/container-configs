@@ -9,7 +9,6 @@ config:
     users:
     - name: user
       shell: /bin/bash
-      sudo: ALL=(ALL) NOPASSWD:ALL
     packages:
     - firefox
     power_state:

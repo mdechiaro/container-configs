@@ -10,7 +10,6 @@ config:
     users:
     - name: user
       shell: /bin/bash
-      sudo: ALL=(ALL) NOPASSWD:ALL
     runcmd:
     - dnf config-manager addrepo --from-repofile=https://dl.winehq.org/wine-builds/fedora/43/winehq.repo
     - dnf install winehq-devel
