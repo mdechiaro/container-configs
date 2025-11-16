@@ -1,3 +1,4 @@
+# incus config device add firefox downloads disk source=/home/$USER/Downloads path=/home/user/Downloads shift=true
 # incus exec firefox -- su -l user -c firefox
 ---
 name: firefox

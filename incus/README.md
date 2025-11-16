@@ -5,11 +5,13 @@ Run `scripts/init.sh` to initialize first time setup.
 Run following commands to use incus without sudo.
 
 ```
-sudo usermod -G incus-admin $USER
+sudo usermod -aG incus-admin $USER
 newgrp incus-admin
 ```
 
 Run `scripts/dns-container-names.sh` to enable DNS lookups on container names.
+
+Run `scripts/update-default-firefox-icon.sh` to use container instead of OS package.
 
 ## Profile
 
@@ -44,6 +46,14 @@ su <user>
 Add more cpus to container.
 ```
 incus config set work limits.cpu 4
+```
+
+## Mounts
+
+To share a folder between a host and container.
+```
+incus config device add firefox downloads disk source=/home/$USER/Downloads \
+  path=/home/user/Downloads shift=true
 ```
 
 # Backup
