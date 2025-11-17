@@ -1,9 +1,10 @@
-# images:fedora/42/cloud
 ---
 name: work
 description: work environment using fedora
 config:
   environment.DBUS_SESSION_BUS_ADDRESS: /run/mount/bus
+  environment.PIPEWIRE_REMOTE: /run/mount/pipewire_remote
+  environment.PULSE_SERVER: unix:/run/mount/pulse_server
   environment.WAYLAND_DISPLAY: /run/mount/wayland-0
   user.user-data: |
     #cloud-config
@@ -18,33 +19,28 @@ config:
     - firefox
     - freerdp
     - git
-    - git-credential-oauth
-    - libatomic
     - libreoffice
-    - libtool
     - lynx
     - mutt
     - nnn
     - openconnect
     - pinentry
-    - profanity
     - python3
-    - python3-pip
     - rclone
     - rsync
-    - ruby
     - tmux
     - vim
     - wget
     - xdg-utils
     runcmd:
-    - mkdir /opt/venv
+    - mkdir -p /etc/firefox/policies
+    - |
+      curl -L https://github.com/mdechiaro/firefox-policies/raw/refs/heads/main/policies.json \
+        -o /etc/firefox/policies/policies.json
     # openconnect-sso
-    - dnf install -y libxml2-devel libxslt-devel
-    # fedora 41 ships with python 3.13
-    # that version fails to install properly
-    # workaround is to build with 3.12
-    - dnf install -y python3.12 python3.12-devel
+    - mkdir /opt/venv
+    # lxml fails to build on python 3.14. workaround is to build with 3.12
+    - dnf install -y libatomic libxml2-devel libxslt-devel python3.12 python3.12-devel
     - git clone https://github.com/vlaci/openconnect-sso /tmp/openconnect-sso
     - python3.12 -m venv /opt/venv/openconnect-sso
     - /opt/venv/openconnect-sso/bin/python -m ensurepip
@@ -74,6 +70,24 @@ devices:
     name: eth0
     network: incusbr0
     type: nic
+  pipewire:
+    bind: container
+    connect: unix:/run/user/1000/pipewire-0
+    gid: '1000'
+    listen: unix:/run/mount/pipewire_remote
+    security.gid: '1000'
+    security.uid: '1000'
+    type: proxy
+    uid: '1000'
+  pulseserver:
+    bind: container
+    connect: unix:/run/user/1000/pulse/native
+    gid: '1000'
+    listen: unix:/run/mount/pulse_server
+    security.gid: '1000'
+    security.uid: '1000'
+    type: proxy
+    uid: '1000'
   storage:
     path: /
     pool: default
