@@ -1,0 +1,69 @@
+---
+name: claude
+description: system container for claude
+config:
+  environment.WAYLAND_DISPLAY: /run/mount/wayland-0
+  user.user-data: |
+    #cloud-config
+    timezone: America/Chicago
+    packages:
+    - curl
+    - firefox
+    - git
+    - rsync
+    - tmux
+    - vim
+    - wget
+    - xdg-utils
+    users:
+    - name: user
+      shell: /bin/bash
+      sudo: ALL=(ALL) NOPASSWD:ALL
+    power_state:
+      delay: now
+      mode: reboot
+      timeout: 30
+      condition: true
+    write_files:
+    - path: /etc/profile.d/claude.sh
+      content: |
+        # function to install it
+        install_claude () {
+          curl -fsSL https://claude.ai/install.sh | bash
+        }
+
+        # source claude credentials for non-root user
+        if [ "$(id -u)" -ne 0 ]; then
+          source /mnt/secrets/env
+        fi
+      owner: root:root
+      permissions: '0755'
+devices:
+  gpu:
+    gid: '1000'
+    type: gpu
+    uid: '1000'
+  network:
+    name: eth0
+    network: incusbr0
+    type: nic
+  secrets:
+    type: disk
+    source: /etc/incus/secrets/claude
+    path: /mnt/secrets
+    readonly: true
+    shift: true
+  storage:
+    path: /
+    pool: default
+    type: disk
+  wayland:
+    bind: container
+    connect: unix:/run/user/1000/wayland-0
+    gid: '1000'
+    listen: unix:/run/mount/wayland-0
+    security.gid: '1000'
+    security.uid: '1000'
+    type: proxy
+    uid: '1000'
+used_by: []
