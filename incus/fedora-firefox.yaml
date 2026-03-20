@@ -1,9 +1,12 @@
 # incus config device add firefox downloads disk source=/home/$USER/Downloads path=/home/user/Downloads shift=true
-# incus exec firefox -- su -l user -c firefox
+# incus exec firefox -- su user -c firefox
 ---
 name: firefox
 description: system container for firefox
 config:
+  environment.PIPEWIRE_REMOTE: /run/mount/pipewire_remote
+  environment.PULSE_SERVER: unix:/run/mount/pulse_server
+  environment.WAYLAND_DISPLAY: /run/mount/wayland_display
   user.user-data: |
     #cloud-config
     timezone: America/Chicago
@@ -18,16 +21,10 @@ config:
       timeout: 30
       condition: true
     runcmd:
-    - |
-      cat <<EOF> /home/user/.bashrc
-      export PIPEWIRE_REMOTE=/run/mount/pipewire_remote
-      export PULSE_SERVER=unix:/run/mount/pulse_server
-      export WAYLAND_DISPLAY=/run/mount/wayland_display
-      export XDG_RUNTIME_DIR=/run/user/1000
-      EOF
-    - chown user:user /home/user/.bashrc
     - mkdir -p /etc/firefox/policies
-    - curl -L https://github.com/mdechiaro/firefox-policies/raw/refs/heads/main/policies.json -o /etc/firefox/policies/policies.json
+    - |
+      curl -L https://github.com/mdechiaro/firefox-policies/raw/refs/heads/main/policies.json \
+        -o /etc/firefox/policies/policies.json
 devices:
   gpu:
     gid: '1000'
