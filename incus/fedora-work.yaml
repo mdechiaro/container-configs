@@ -2,17 +2,11 @@
 name: work
 description: work environment using fedora
 config:
-  environment.DBUS_SESSION_BUS_ADDRESS: /run/mount/bus
-  environment.PIPEWIRE_REMOTE: /run/mount/pipewire_remote
-  environment.PULSE_SERVER: unix:/run/mount/pulse_server
-  environment.WAYLAND_DISPLAY: /run/mount/wayland-0
+  environment.PIPEWIRE_REMOTE: /run/mount/pipewire
+  environment.PULSE_SERVER: unix:/run/mount/pulse
+  environment.WAYLAND_DISPLAY: /run/mount/wayland
   user.user-data: |
     #cloud-config
-    timezone: America/Chicago
-    users:
-    - name: user
-      shell: /bin/bash
-      sudo: ALL=(ALL) NOPASSWD:ALL
     packages:
     - aspell
     - bash-completion
@@ -32,36 +26,22 @@ config:
     - vim
     - wget
     - xdg-utils
-    runcmd:
-    - mkdir -p /etc/firefox/policies
-    - |
-      curl -L https://github.com/mdechiaro/firefox-policies/raw/refs/heads/main/policies.json \
-        -o /etc/firefox/policies/policies.json
-    # openconnect-sso
-    - mkdir /opt/venv
-    # lxml fails to build on python 3.14. workaround is to build with 3.12
-    - dnf install -y libatomic libxml2-devel libxslt-devel python3.12 python3.12-devel
-    - git clone https://github.com/vlaci/openconnect-sso /tmp/openconnect-sso
-    - python3.12 -m venv /opt/venv/openconnect-sso
-    - /opt/venv/openconnect-sso/bin/python -m ensurepip
-    - /opt/venv/openconnect-sso/bin/python -m pip install /tmp/openconnect-sso/
-    - ln -s /opt/venv/openconnect-sso/bin/openconnect-sso /usr/local/bin/
-    - rm -rf /tmp/openconnect-sso
     power_state:
       delay: now
       mode: reboot
       timeout: 30
       condition: true
+    runcmd:
+    - mkdir -p /etc/firefox/policies
+    - |
+      curl -L https://github.com/mdechiaro/firefox-policies/raw/refs/heads/main/policies.json \
+        -o /etc/firefox/policies/policies.json
+    timezone: America/Chicago
+    users:
+    - name: user
+      shell: /bin/bash
+      sudo: ALL=(ALL) NOPASSWD:ALL
 devices:
-  dbus:
-    bind: container
-    connect: unix:/run/user/1000/bus
-    gid: '1000'
-    listen: unix:/run/mount/bus
-    security.gid: '1000'
-    security.uid: '1000'
-    type: proxy
-    uid: '1000'
   gpu:
     gid: '1000'
     type: gpu
@@ -74,7 +54,7 @@ devices:
     bind: container
     connect: unix:/run/user/1000/pipewire-0
     gid: '1000'
-    listen: unix:/run/mount/pipewire_remote
+    listen: unix:/run/mount/pipewire
     security.gid: '1000'
     security.uid: '1000'
     type: proxy
@@ -83,7 +63,7 @@ devices:
     bind: container
     connect: unix:/run/user/1000/pulse/native
     gid: '1000'
-    listen: unix:/run/mount/pulse_server
+    listen: unix:/run/mount/pulse
     security.gid: '1000'
     security.uid: '1000'
     type: proxy
@@ -96,7 +76,7 @@ devices:
     bind: container
     connect: unix:/run/user/1000/wayland-0
     gid: '1000'
-    listen: unix:/run/mount/wayland-0
+    listen: unix:/run/mount/wayland
     security.gid: '1000'
     security.uid: '1000'
     type: proxy
