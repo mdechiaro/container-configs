@@ -15,6 +15,8 @@ config:
       shell: /bin/bash
     packages:
     - firefox
+    - thunar
+    - xdg-utils
     power_state:
       delay: now
       mode: reboot
