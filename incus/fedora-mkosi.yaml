@@ -1,0 +1,40 @@
+---
+name: mkosi
+description: container for building distro images with mkosi
+config:
+  user.user-data: |
+    #cloud-config
+    timezone: America/Chicago
+    users:
+    - name: user
+      shell: /bin/bash
+    packages:
+    - apt
+    - btrfs-progs
+    - distribution-gpg-keys
+    - dosfstools
+    - git
+    - mtools
+    - python3-pefile
+    - sbsigntools
+    - squashfs-tools
+    - zypper
+    power_state:
+      delay: now
+      mode: reboot
+      timeout: 30
+      condition: true
+    runcmd:
+    - python3 -m venv /opt/venv
+    - /opt/venv/bin/pip install git+https://github.com/systemd/mkosi.git
+    - ln -s /opt/venv/bin/mkosi /usr/local/bin
+devices:
+  network:
+    name: eth0
+    network: incusbr0
+    type: nic
+  storage:
+    path: /
+    pool: default
+    type: disk
+used_by: []
